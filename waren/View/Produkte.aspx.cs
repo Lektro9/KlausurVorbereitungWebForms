@@ -32,7 +32,46 @@ namespace waren.View
             Verwalter.Produkte = Verwalter.getProdukte();
             Verwalter.closeConnection();
 
-            Console.WriteLine("stop");
+            Repeater1.DataSource = Verwalter.Produkte;
+            Repeater1.DataBind();
+        }
+
+        protected void EditBtn(object sender, EventArgs e)
+        {
+            string input = this.Request.Form["artNr"];
+            double price = Convert.ToDouble(this.Request.Form["priceInput"]);
+            int ArtNr = Convert.ToInt32(input);
+             
+
+            Verwalter.openDBConection();
+            Verwalter.editProduktID(price, ArtNr);
+            Verwalter.closeConnection();
+
+            Response.Redirect(Request.RawUrl);
+        }
+
+        protected void CreateArtBtn(object sender, EventArgs e)
+        {
+            string Bezeichnung = this.Request.Form["bezCreate"];
+            double price = Convert.ToDouble(this.Request.Form["priceCreate"]);
+
+
+            Verwalter.openDBConection();
+            Verwalter.createProdukt(price, Bezeichnung);
+            Verwalter.closeConnection();
+
+            Response.Redirect(Request.RawUrl);
+        }
+
+        protected void DeleteArtBtn(object sender, EventArgs e)
+        {
+            int ArtNr = Convert.ToInt32(this.Request.Form["artNrDelete"]);
+
+            Verwalter.openDBConection();
+            Verwalter.deleteProdukt(ArtNr);
+            Verwalter.closeConnection();
+
+            Response.Redirect(Request.RawUrl);
         }
     }
 }

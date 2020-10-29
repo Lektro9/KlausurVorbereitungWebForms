@@ -60,6 +60,32 @@ namespace waren
             return retVal;
         }
 
+        public void createProdukt(double price, string bezeichnung)
+        {
+            string SQLString = "INSERT INTO `produkte` (`Artikelnummer`, `Bezeichnung`, `Preis`) VALUES (NULL, @bez, @preis);";
+            MySqlCommand command = new MySqlCommand(SQLString, Mysqlconnection);
+            command.Parameters.AddWithValue("@bez", bezeichnung);
+            command.Parameters.AddWithValue("@preis", price);
+            executeSQLCommand(command);
+        }
+
+        public void deleteProdukt(int artNr)
+        {
+            string SQLString = "DELETE FROM `produkte` WHERE `produkte`.`Artikelnummer` = @id";
+            MySqlCommand command = new MySqlCommand(SQLString, Mysqlconnection);
+            command.Parameters.AddWithValue("@id", artNr);
+            executeSQLCommand(command);
+        }
+
+        public void editProduktID(double price, int artNr)
+        {
+            string SQLString = "UPDATE `produkte` SET `Preis` = @preis WHERE `produkte`.`Artikelnummer` = @id;";
+            MySqlCommand command = new MySqlCommand(SQLString, Mysqlconnection);
+            command.Parameters.AddWithValue("@id", artNr);
+            command.Parameters.AddWithValue("@preis", price);
+            executeSQLCommand(command);
+        }
+
         public bool openDBConection()
         {
             try
@@ -75,17 +101,16 @@ namespace waren
             }
         }
 
-        private bool executeSQLState(string sQLString)
+        private bool executeSQLCommand(MySqlCommand command)
         {
             bool retVal = false;
-            MySqlCommand command = new MySqlCommand(sQLString, Mysqlconnection);
-            int anzahl = -1; // to check how many rows are effected
+            int anzahl = -1;
             try
             {
                 anzahl = command.ExecuteNonQuery();
                 retVal = true;
             }
-            catch (Exception)
+            catch (MySqlException e)
             {
                 Mysqlconnection.Close();
                 retVal = false;
